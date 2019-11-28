@@ -1,5 +1,9 @@
 import socket
 import re
+import gevent
+from gevent import monkey
+
+monkey.patch_all()
 
 
 def service_client(new_socket):
@@ -8,9 +12,10 @@ def service_client(new_socket):
     request_lines = request.splitlines()
     # print(request_lines)
 
-    ret = re.match(r"[^/]+(/[^ ]*)", request_lines[0])
-    if ret:
-        file_name = ret.group(1)
+    if len(request_lines) > 0:
+        ret = re.match(r"[^/]+(/[^ ]*)", request_lines[0])
+        if ret:
+            file_name = ret.group(1)
 
     print(file_name)
     if file_name == "/":
@@ -31,6 +36,7 @@ def service_client(new_socket):
         response += "\r\n"
         response += "<h1>找不到文件</h1>"
         new_socket.send(response.encode("utf-8"))
+
     new_socket.close()
 
 
@@ -44,7 +50,7 @@ def main():
     while True:
         new_socket, client_addr = tcp_server_socket.accept()
 
-        service_client(new_socket)
+        gevent.spawn(service_client, new_socket)
 
 
 if __name__ == '__main__':
