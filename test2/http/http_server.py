@@ -11,6 +11,8 @@ def service_client(new_socket):
     response += "<h1>hahahahhaha</h1>"
     new_socket.send(response.encode("utf-8"))
 
+    new_socket.close()
+
 
 def main():
     tcp_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -23,8 +25,6 @@ def main():
         new_socket, client_addr = tcp_server_socket.accept()
 
         service_client(new_socket)
-
-        new_socket.close()
 
 
 if __name__ == '__main__':
