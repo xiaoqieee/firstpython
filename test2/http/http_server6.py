@@ -65,6 +65,7 @@ def main():
                 if recv_data:
                     service_client(client_socket, recv_data.decode("gbk"))
                 else:
+                    client_socket.close()
                     client_socket_list.remove(client_socket)
 
 
